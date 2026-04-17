@@ -1,0 +1,118 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      ngspice_version:
+        description: 'NGSpice version to build (e.g., 46)'
+        required: true
+        type: string
+
+jobs:
+    version-check:
+        runs-on: 'ubuntu-latest'
+        outputs:
+            ngspice_version: ${{ steps.check.outputs.ngspice_version }}
+            rls_version: ${{ steps.check.outputs.rls_version }}
+        steps:
+        - name: validate-version
+          id: check
+          run: |
+            ngspice_version="${{ inputs.ngspice_version }}"
+
+            # Validate the version exists on SourceForge
+            version_check=$(curl -s --max-time 30 \
+                "https://sourceforge.net/projects/ngspice/files/ng-spice-rework/${ngspice_version}/ngspice-${ngspice_version}.tar.gz/download" \
+                -o /dev/null -w "%{http_code}")
+
+            if [ "$version_check" = "404" ]; then
+              echo "Error: NGSpice version '${ngspice_version}' not found on SourceForge"
+              exit 1
+            fi
+
+            rls_version="${ngspice_version}"
+
+            echo "ngspice_version: ${ngspice_version}"
+            echo "rls_version: ${rls_version}"
+
+            echo "ngspice_version=${ngspice_version}" >> ${GITHUB_OUTPUT}
+            echo "rls_version=${rls_version}" >> ${GITHUB_OUTPUT}
+
+            cat ${GITHUB_OUTPUT}
+
+        - name: print
+          run: |
+            echo "ngspice_version: ${{ steps.check.outputs.ngspice_version }}"
+            echo "rls_version: ${{ steps.check.outputs.rls_version }}"
+
+
+    build-linux-x86_64:
+        runs-on: 'ubuntu-latest'
+        needs: version-check
+        strategy:
+          matrix:
+            image: [manylinux_2_28_x86_64, manylinux_2_34_x86_64]
+        steps:
+            - uses: actions/checkout@v4
+            - name: print
+              run: |
+                echo "image: ${{ matrix.image }}"
+                echo "ngspice_version: ${{ needs.version-check.outputs.ngspice_version }}"
+            - name: build
+              env:
+                image: ${{ matrix.image }}
+                ngspice_version: ${{ needs.version-check.outputs.ngspice_version }}
+                rls_version: ${{ needs.version-check.outputs.rls_version }}
+              run: >
+                docker run --rm
+                --volume "$(pwd):/io"
+                --env ngspice_version
+                --env rls_version
+                --env image
+                --workdir /io
+                quay.io/pypa/${{ matrix.image }}
+                /io/scripts/build.sh
+            - name: upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: "ngspice-${{ matrix.image }}"
+                path: "release/ngspice-${{ matrix.image }}-*.tar.gz"
+                if-no-files-found: error
+                retention-days: 7
+
+    publish:
+        runs-on: 'ubuntu-latest'
+        needs:
+        - build-linux-x86_64
+        - version-check
+        permissions:
+            contents: write
+        steps:
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: "v${{ needs.version-check.outputs.rls_version }}"
+            release_name: "Release v${{ needs.version-check.outputs.rls_version }}"
+            body: |
+              NGSpice binary build
+              NGSpice version: ${{ needs.version-check.outputs.ngspice_version }}
+              Built with XSPICE and CIDER extensions.
+            draft: false
+            prerelease: false
+
+        - name: Download build artifacts
+          uses: actions/download-artifact@v4
+          with:
+            pattern: "ngspice-*"
+            path: release
+            merge-multiple: true
+
+        - name: Upload assets to release
+          uses: softprops/action-gh-release@v2
+          with:
+            tag_name: "v${{ needs.version-check.outputs.rls_version }}"
+            files: |
+              release/**/*.tar.gz
+            fail_on_unmatched_files: true
