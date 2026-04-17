@@ -151,6 +151,7 @@ cd ${root}
 mkdir -p release
 
 mv install ngspice
+cp ${root}/scripts/export.envrc ngspice/
 tar czf release/ngspice-${rls_plat}-${rls_version}.tar.gz ngspice
 
 echo "Build complete: release/ngspice-${rls_plat}-${rls_version}.tar.gz"
