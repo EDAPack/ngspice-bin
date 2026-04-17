@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Overview &#8212; ngspice-bin  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="ngspice-bin Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
+<p><strong>ngspice-bin</strong> packages <a class="reference external" href="https://ngspice.sourceforge.io/">NGSpice</a> — the
+mixed-level / mixed-signal circuit simulator — into a portable, manylinux-
+compatible binary release for Linux.</p>
+<section id="why-ngspice-bin">
+<h2>Why ngspice-bin?<a class="headerlink" href="#why-ngspice-bin" title="Link to this heading">¶</a></h2>
+<p>Upstream NGSpice ships as source code.  Building it requires a C toolchain,
+readline, ncurses, and several other libraries that may not be present (or may
+be at the wrong version) on every target machine.  ngspice-bin provides:</p>
+<ul class="simple">
+<li><p>A pre-built <code class="docutils literal notranslate"><span class="pre">ngspice</span></code> binary that runs on any Linux system with
+glibc ≥ 2.17 (manylinux_2_28 build) without any system-level installation.</p></li>
+<li><p>All non-standard shared libraries (<code class="docutils literal notranslate"><span class="pre">libreadline</span></code>, <code class="docutils literal notranslate"><span class="pre">libtinfo</span></code>,
+<code class="docutils literal notranslate"><span class="pre">libgomp</span></code>, <code class="docutils literal notranslate"><span class="pre">libstdc++</span></code>, <code class="docutils literal notranslate"><span class="pre">libgcc_s</span></code>) bundled inside the tarball with
+<code class="docutils literal notranslate"><span class="pre">$ORIGIN</span></code>-relative RPATHs — nothing extra needs to be on <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code>.</p></li>
+<li><p>XSPICE code-level simulation extensions enabled (analog and digital
+mixed-signal models).</p></li>
+<li><p>CIDER numerical device simulation enabled.</p></li>
+<li><p>An <code class="docutils literal notranslate"><span class="pre">export.envrc</span></code> that prepends <code class="docutils literal notranslate"><span class="pre">bin/</span></code> to <code class="docutils literal notranslate"><span class="pre">PATH</span></code> via
+<a class="reference external" href="https://direnv.net/">direnv</a> / <a class="reference external" href="https://github.com/fvutils/ivpm">IVPM</a>.</p></li>
+</ul>
+</section>
+<section id="release-naming">
+<h2>Release naming<a class="headerlink" href="#release-naming" title="Link to this heading">¶</a></h2>
+<p>Each release tarball is named:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ngspice</span><span class="o">-&lt;</span><span class="n">image</span><span class="o">&gt;-&lt;</span><span class="n">ngspice_version</span><span class="o">&gt;.&lt;</span><span class="n">run_id</span><span class="o">&gt;.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ngspice</span><span class="o">-</span><span class="n">manylinux_2_28_x86_64</span><span class="o">-</span><span class="mf">46.12345678</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;image&gt;</span></code> field identifies the manylinux base used for the build, giving
+a clear indication of the minimum glibc requirement.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ngspice-bin</a></h1>
+
+
+
+<p class="blurb">Portable NGSpice binary distribution for Linux</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=EDAPack&repo=ngspice-bin&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-ngspice-bin">Why ngspice-bin?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-naming">Release naming</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building from Source</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">ngspice-bin Documentation</a></li>
+      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Matthew Ballance and Contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/overview.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/EDAPack/ngspice-bin" class="github">
+        <img src="_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
